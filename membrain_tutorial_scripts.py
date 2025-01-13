@@ -1,4 +1,5 @@
 import os
+from tqdm import tqdm
 import numpy as np
 from scipy.ndimage import map_coordinates
 
@@ -8,17 +9,52 @@ from membrain_seg.segmentation.dataloading.data_utils import (
 )
 
 
+def setup_environment_with_progress():
+    """
+    Sets up the environment with progress indicators.
+    """
+    steps = [
+        ("Removing old repository (if exists)", "rm -r membrain_tutorial_scripts"),
+        (
+            "Cloning the tutorial repository",
+            "git clone https://github.com/CellArchLab/membrain_tutorial_scripts.git -q",
+        ),
+        ("Installing MemBrain-seg", "pip install membrain-seg==0.0.7 -q"),
+        ("Installing gdown for model download", "pip install gdown -q"),
+    ]
+
+    with tqdm(
+        total=len(steps),
+        desc="Setting up environment",
+        bar_format="{l_bar}{bar} [ time: {elapsed} ]",
+    ) as pbar:
+        for desc, command in steps:
+            print(f"{desc}...")
+            os.system(command)
+            pbar.update(1)
+
+    print("✅ Setup complete!")
+
+
+# Run the setup
+setup_environment_with_progress()
+
+
 def download_membrain_model():
     import gdown
 
+    print(
+        "Downloading MemBrain model from Google Drive. This should be faster, but can still take few minutes."
+    )
     # File ID and destination path
     file_id = "1tSQIz_UCsQZNfyHg0RxD-4meFgolszo8"
-    destination = "membrain_v10_alpha"  # Replace with your desired file name
+    destination = "./membrain_v10_alpha.ckpt"  # Replace with your desired file name
 
     # Download file from Google Drive
     gdown.download(
         f"https://drive.google.com/uc?id={file_id}", destination, quiet=False
     )
+    print("Checkpointt file is stored here:", destination)
 
 
 def load_tutorial_data():
