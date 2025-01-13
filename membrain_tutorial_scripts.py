@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from scipy.ndimage import map_coordinates
-from membrain_pick.dataloading.data_utils import load_mesh_from_hdf5, read_star_file
+
 from membrain_seg.segmentation.dataloading.data_utils import load_tomogram
 
 
@@ -29,6 +29,8 @@ membrane_files = [
 
 
 def load_membrane_data_raw(membrane_file):
+    from membrain_pick.dataloading.data_utils import load_mesh_from_hdf5, read_star_file
+
     assert membrane_file in membrane_files, f"Invalid membrane file: {membrane_file}"
     # Load and prepare data for plotly:
     mesh_path = f"./mesh_data/Tomo0001_{membrane_file}.h5"
