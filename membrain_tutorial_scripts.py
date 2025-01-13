@@ -9,37 +9,6 @@ from membrain_seg.segmentation.dataloading.data_utils import (
 )
 
 
-def setup_environment_with_progress():
-    """
-    Sets up the environment with progress indicators.
-    """
-    steps = [
-        ("Removing old repository (if exists)", "rm -r membrain_tutorial_scripts"),
-        (
-            "Cloning the tutorial repository",
-            "git clone https://github.com/CellArchLab/membrain_tutorial_scripts.git -q",
-        ),
-        ("Installing MemBrain-seg", "pip install membrain-seg==0.0.7 -q"),
-        ("Installing gdown for model download", "pip install gdown -q"),
-    ]
-
-    with tqdm(
-        total=len(steps),
-        desc="Setting up environment",
-        bar_format="{l_bar}{bar} [ time: {elapsed} ]",
-    ) as pbar:
-        for desc, command in steps:
-            print(f"{desc}...")
-            os.system(command)
-            pbar.update(1)
-
-    print("✅ Setup complete!")
-
-
-# Run the setup
-setup_environment_with_progress()
-
-
 def download_membrain_model():
     import gdown
 
