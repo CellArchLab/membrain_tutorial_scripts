@@ -1,0 +1,95 @@
+import os
+import numpy as np
+from scipy.ndimage import map_coordinates
+from membrain_pick.dataloading.data_utils import load_mesh_from_hdf5, read_star_file
+from membrain_seg.segmentation.dataloading.data_utils import load_tomogram
+
+
+def load_tutorial_data():
+    # Load the data
+    print("Downloading data from Zenodo. This can take few minutes.")
+    os.system(
+        "curl https://zenodo.org/api/records/14610597/files/membrain_tutorial.zip/content > membrain_tutorial.zip"
+    )
+    print("Unzipping downloaded data.")
+    os.system("unzip ./membrain_tutorial.zip")
+    print("")
+    print("Done. Files in the tutorial folder:")
+    for filename in os.listdir("./data5mbs"):
+        print(filename)
+
+
+membrane_files = [
+    "T1S1M12",
+    "T1S1M14",
+    "T1S1M16",
+    "T1S1M17",
+    "T1S1M19",
+]
+
+
+def load_membrane_data_raw(membrane_file):
+    assert membrane_file in membrane_files, f"Invalid membrane file: {membrane_file}"
+    # Load and prepare data for plotly:
+    mesh_path = f"./mesh_data/Tomo0001_{membrane_file}.h5"
+    mesh_data = load_mesh_from_hdf5(mesh_path)
+    tomo_path = "./Tomo0001.mrc"
+    tomo = load_tomogram(tomo_path).data
+    star_file = f"./positions/Tomo0001_{membrane_file}.star"
+    positions = read_star_file(star_file)
+    positions = np.array(positions)
+    points = mesh_data["points"]
+    tomo_values = map_coordinates(tomo, points.T)
+
+
+def generate_sphere(center, radius=1, resolution=10):
+    phi, theta = np.linspace(0, np.pi, resolution), np.linspace(
+        0, 2 * np.pi, resolution
+    )
+    phi, theta = np.meshgrid(phi, theta)
+    x = center[0] + radius * np.sin(phi) * np.cos(theta)
+    y = center[1] + radius * np.sin(phi) * np.sin(theta)
+    z = center[2] + radius * np.cos(phi)
+    return x, y, z
+
+
+def visualize_membranes(points, positions, colors, color_scales, z_shifts):
+    import plotly.graph_objects as go
+
+    data = []
+
+    for pointset, color, cscale, z_shift in zip(points, colors, color_scales, z_shifts):
+        data.append(
+            go.Scatter3d(
+                x=pointset[:, 0],
+                y=pointset[:, 1],
+                z=pointset[:, 2] + z_shift,
+                mode="markers",
+                marker=dict(
+                    size=5,
+                    color=color,
+                    colorscale=cscale,
+                ),
+            )
+        )
+
+    fig = go.Figure(
+        data=data,
+        layout=dict(
+            scene=dict(
+                xaxis=dict(visible=False),
+                yaxis=dict(visible=False),
+                zaxis=dict(visible=False),
+            )
+        ),
+    )
+
+    if positions is not None:
+        for point in positions:
+            x, y, z = generate_sphere(point, radius=4)
+            fig.add_trace(
+                go.Surface(
+                    x=x, y=y, z=z, colorscale="Viridis", opacity=0.9, showscale=False
+                )
+            )
+    fig.show()
