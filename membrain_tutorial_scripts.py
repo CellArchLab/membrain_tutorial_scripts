@@ -8,6 +8,19 @@ from membrain_seg.segmentation.dataloading.data_utils import (
 )
 
 
+def download_membrain_model():
+    import gdown
+
+    # File ID and destination path
+    file_id = "1tSQIz_UCsQZNfyHg0RxD-4meFgolszo8"
+    destination = "membrain_v10_alpha"  # Replace with your desired file name
+
+    # Download file from Google Drive
+    gdown.download(
+        f"https://drive.google.com/uc?id={file_id}", destination, quiet=False
+    )
+
+
 def load_tutorial_data():
     # Load the data
     print("Downloading data from Zenodo. This can take few minutes.")
