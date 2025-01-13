@@ -2,7 +2,10 @@ import os
 import numpy as np
 from scipy.ndimage import map_coordinates
 
-from membrain_seg.segmentation.dataloading.data_utils import load_tomogram
+from membrain_seg.segmentation.dataloading.data_utils import (
+    load_tomogram,
+    store_tomogram,
+)
 
 
 def load_tutorial_data():
@@ -53,6 +56,17 @@ def generate_sphere(center, radius=1, resolution=10):
     y = center[1] + radius * np.sin(phi) * np.sin(theta)
     z = center[2] + radius * np.cos(phi)
     return x, y, z
+
+
+def crop_tomogram(tomo_file, out_file, extents=[(100, 200), (100, 200), (100, 200)]):
+    tomo = load_tomogram(tomo_file).data
+    tomo_cropped = tomo[
+        extents[0][0] : extents[0][1],
+        extents[1][0] : extents[1][1],
+        extents[2][0] : extents[2][1],
+    ]
+    store_tomogram(out_file, tomo_cropped)
+    return tomo_cropped
 
 
 def visualize_membranes(points, positions, colors, color_scales, z_shifts):
