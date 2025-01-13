@@ -22,15 +22,6 @@ def load_tutorial_data():
         print(filename)
 
 
-membrane_files = [
-    "T1S1M12",
-    "T1S1M14",
-    "T1S1M16",
-    "T1S1M17",
-    "T1S1M19",
-]
-
-
 def load_membrane_data_raw(membrane_file):
     from membrain_pick.dataloading.data_utils import load_mesh_from_hdf5, read_star_file
 
@@ -109,3 +100,12 @@ def visualize_membranes(points, positions, colors, color_scales, z_shifts):
                 )
             )
     fig.show()
+
+
+membrane_files = [
+    "T1S1M12",
+    "T1S1M14",
+    "T1S1M16",
+    "T1S1M17",
+    "T1S1M19",
+]
