@@ -54,6 +54,7 @@ def load_membrane_data_raw(membrane_file):
     positions = np.array(positions)
     points = mesh_data["points"]
     tomo_values = map_coordinates(tomo, points.T)
+    return points, tomo_values, positions
 
 
 def generate_sphere(center, radius=1, resolution=10):
