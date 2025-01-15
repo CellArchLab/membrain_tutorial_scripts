@@ -54,7 +54,17 @@ def load_membrane_data_raw(membrane_file):
     positions = np.array(positions)
     points = mesh_data["points"]
     tomo_values = map_coordinates(tomo, points.T)
-    return points, tomo_values, positions
+    # if "scores" in the keys: also load that
+    out_dict = {
+        "points": points,
+        "tomo_values": tomo_values,
+        "positions": positions,
+    }
+    if "scores" in mesh_data.keys():
+        scores = mesh_data["scores"]
+        out_dict["scores"] = scores
+    return out_dict
+    # return points, tomo_values, positions
 
 
 def generate_sphere(center, radius=1, resolution=10):
