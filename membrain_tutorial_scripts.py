@@ -13,11 +13,21 @@ def get_checkpoint_file(latest=False):
     if latest:
         # Get the latest checkpoint file
         CHECKPOINTS_FOLDER = "./training_output/checkpoints"
-        LATEST_FILE = !ls -t {CHECKPOINTS_FOLDER} | head -n 1
-        ckpt_path = f"{CHECKPOINTS_FOLDER}/{LATEST_FILE[0]}"
+        files = os.listdir(CHECKPOINTS_FOLDER)
+        files = sorted(
+            files,
+            key=lambda x: os.path.getmtime(os.path.join(CHECKPOINTS_FOLDER, x)),
+            reverse=True,
+        )
+        if not files:
+            raise FileNotFoundError(
+                "No checkpoint files found in the specified folder."
+            )
+        ckpt_path = os.path.join(CHECKPOINTS_FOLDER, files[0])
     else:
         ckpt_path = "../membrain_tutorial_scripts/membrain_pick_ckpt/tutorial_0-epoch=199-val_loss=1.05.ckpt"
     return ckpt_path
+
 
 def create_membrain_pick_training_data():
     os.system("mkdir training_data")
@@ -91,6 +101,7 @@ def load_membrane_data_raw(membrane_file):
         scores = mesh_data["scores"]
         out_dict["scores"] = scores
     return out_dict
+
 
 def load_membrane_data_pred(membrane_file):
     from membrain_pick.dataloading.data_utils import load_mesh_from_hdf5, read_star_file
