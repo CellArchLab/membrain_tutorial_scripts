@@ -113,8 +113,8 @@ def load_membrane_data_pred(membrane_file):
     tomo_path = "./Tomo0001.mrc"
     tomo = load_tomogram(tomo_path).data
     positions = mesh_data["cluster_centers"]
-    positions = np.array(positions)
-    points = mesh_data["points"]
+    positions = np.array(positions) / 14.08
+    points = np.array(mesh_data["points"]) / 14.08
     tomo_values = map_coordinates(tomo, points.T)
     # if "scores" in the keys: also load that
     out_dict = {
