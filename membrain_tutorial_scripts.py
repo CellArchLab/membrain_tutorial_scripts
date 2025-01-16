@@ -25,7 +25,7 @@ def get_checkpoint_file(latest=False):
             )
         ckpt_path = os.path.join(CHECKPOINTS_FOLDER, files[0])
     else:
-        ckpt_path = "../membrain_tutorial_scripts/membrain_pick_ckpt/tutorial_0-epoch=199-val_loss=1.05.ckpt"
+        ckpt_path = "/content/membrain_tutorial_scripts/membrain_pick_ckpt/tutorial_0-epoch=199-val_loss=1.05.ckpt"
     return ckpt_path
 
 
@@ -108,7 +108,7 @@ def load_membrane_data_pred(membrane_file):
 
     assert membrane_file in membrane_files, f"Invalid membrane file: {membrane_file}"
     # Load and prepare data for plotly:
-    mesh_path = f"./predictions/Tomo0001_{membrane_file}.h5"
+    mesh_path = f"./predict_output/Tomo0001_{membrane_file}.h5"
     mesh_data = load_mesh_from_hdf5(mesh_path)
     tomo_path = "./Tomo0001.mrc"
     tomo = load_tomogram(tomo_path).data
