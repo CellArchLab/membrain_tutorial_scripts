@@ -9,6 +9,23 @@ from membrain_seg.segmentation.dataloading.data_utils import (
 )
 
 
+def create_membrain_pick_training_data():
+    os.system("mkdir training_data")
+    os.system("mkdir training_data/train")
+    os.system("mkdir training_data/val")
+    os.system("scp mesh_data/Tomo0001_T1S1M12.h5 ./training_data/train/")
+    os.system("scp mesh_data/Tomo0001_T1S1M14.h5 ./training_data/train/")
+    os.system("scp mesh_data/Tomo0001_T1S1M16.h5 ./training_data/train/")
+    os.system("scp mesh_data/Tomo0001_T1S1M17.h5 ./training_data/val/")
+    os.system("scp mesh_data/Tomo0001_T1S1M19.h5 ./training_data/val/")
+    os.system("scp positions/Tomo0001_T1S1M12.star ./training_data/train/")
+    os.system("scp positions/Tomo0001_T1S1M14.star ./training_data/train/")
+    os.system("scp positions/Tomo0001_T1S1M16.star ./training_data/train/")
+    os.system("scp positions/Tomo0001_T1S1M17.star ./training_data/val/")
+    os.system("scp positions/Tomo0001_T1S1M19.star ./training_data/val/")
+    print("Training data created.")
+
+
 def download_membrain_model():
     import gdown
 
@@ -64,7 +81,6 @@ def load_membrane_data_raw(membrane_file):
         scores = mesh_data["scores"]
         out_dict["scores"] = scores
     return out_dict
-    # return points, tomo_values, positions
 
 
 def generate_sphere(center, radius=1, resolution=10):
@@ -102,7 +118,7 @@ def visualize_membranes(points, positions, colors, color_scales, z_shifts):
                 z=pointset[:, 2] + z_shift,
                 mode="markers",
                 marker=dict(
-                    size=5,
+                    size=3.5,
                     color=color,
                     colorscale=cscale,
                 ),
